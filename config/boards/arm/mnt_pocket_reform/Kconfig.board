@@ -1,0 +1,2 @@
+config BOARD_MNT_POCKET_REFORM
+    bool "MNT Pocket Reform Keyboard"

@@ -1,5 +1,42 @@
-on: [push, pull_request, workflow_dispatch]
-
+on:
+  - pull_request
+  - push
+  - workflow_dispatch
 jobs:
+  #build:
+  #  uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+  fetch-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ env.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install remarshal
+      - run: echo "matrix=$(yaml2json build.yaml)" >> "${GITHUB_ENV}"
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    needs: fetch-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v3
+        with:
+          path: |
+            modules/
+            zephyr/
+          key: ${{ hashFiles('**/west.yml') }}
+      - run: west init -l config/
+      - run: west update
+      - run: git -C zmk/ config user.email "${GITHUB_ACTOR}"
+      - run: git -C zmk/ remote add urob https://github.com/urob/zmk.git
+      - run: git -C zmk/ pull urob HEAD
+      - run: west zephyr-export
+      - run: west build -s zmk/app/ -b "${{ matrix.board }}" -- "-DZMK_CONFIG=${GITHUB_WORKSPACE}/config/" ${{ matrix.shield && format('"-DSHIELD={0}"', matrix.shield) }} ${{ matrix.cmake-args }}
+      - run: cp build/zephyr/zmk.uf2 "${{ matrix.shield && format('{0}-', matrix.shield) }}${{ matrix.board }}-zmk.uf2"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: firmware
+          path: "*.uf2"
+    strategy:
+      matrix: ${{ fromJSON(needs.fetch-matrix.outputs.matrix) }}
+      fail-fast: false
+    container: zmkfirmware/zmk-build-arm:stable
