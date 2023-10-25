@@ -1,0 +1,17 @@
+config SENSOR_INIT_PRIORITY
+    default 90
+choice
+    prompt "Trigger mode"
+config PAT9125_TRIGGER_NONE
+    bool "No trigger"
+config PAT9125_TRIGGER_GLOBAL_THREAD
+    bool "Use global thread"
+config PAT9125_TRIGGER_OWN_THREAD
+    bool "Use own thread"
+endchoice
+config PAT9125_THREAD_STACK_SIZE
+    int
+    default 1024
+config PAT9125_THREAD_PRIORITY
+    int
+    default 10

@@ -1,0 +1,6 @@
+description: TODO
+compatible: pixart,pat9125el
+properties:
+  int-gpios:
+    type: phandle-array
+include: i2c-device.yaml

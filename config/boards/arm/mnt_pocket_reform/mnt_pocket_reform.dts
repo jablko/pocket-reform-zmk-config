@@ -70,4 +70,10 @@
         multiplex-ratio = <31>;
         prechargep = <0x22>;
     };
+
+    pat9125@79 {
+        compatible = "pixart,pat9125el";
+        reg = <0x79>;
+        int-gpios = <&gpio0  2 (GPIO_ACTIVE_LOW)>;
+    };
 };
