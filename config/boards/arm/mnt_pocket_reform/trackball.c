@@ -11,7 +11,7 @@ static void trigger_handler(const struct device *dev, const struct sensor_trigge
     zmk_hid_mouse_movement_set(pos_dx.val1, pos_dy.val1);
 }
 
-static int board_init(const struct device *) {
+static int trackball_init(const struct device *) {
     const struct device *dev = DEVICE_DT_GET_ONE(pixart_pat9125el);
     const struct sensor_trigger trig = {
         .type = SENSOR_TRIG_DATA_READY,
@@ -21,4 +21,4 @@ static int board_init(const struct device *) {
     return 0;
 }
 
-SYS_INIT(board_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
+SYS_INIT(trackball_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

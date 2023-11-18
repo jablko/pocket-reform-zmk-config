@@ -77,3 +77,8 @@
         int-gpios = <&gpio0  2 (GPIO_ACTIVE_LOW)>;
     };
 };
+
+&uart1 {
+    status = "okay";
+    pinctrl-0 = <&uart1_default>;
+};

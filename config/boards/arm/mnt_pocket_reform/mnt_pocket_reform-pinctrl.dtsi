@@ -8,4 +8,15 @@
             input-schmitt-enable;
         };
     };
+
+    uart1_default: uart1_default {
+        group1 {
+            pinmux = <UART1_TX_P4>;
+        };
+
+        group2 {
+            pinmux = <UART1_RX_P5>;
+            input-enable;
+        };
+    };
 };
